@@ -1,0 +1,28 @@
+name: 💩 Mountain Stability Inspection
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-the-pile:
+    name: 检查这坨还能不能跑
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 搬运整座山
+        uses: actions/checkout@v4
+
+      - name: 安装铲屎用 JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: 检查山体稳定性
+        run: bash scripts/validate.sh

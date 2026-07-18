@@ -1,0 +1,62 @@
+name: "💩 申请新增展品"
+description: "提交一项值得公开处刑的软件工程反模式"
+title: "[展品] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢向屎山保护区捐赠地质样本。请描述真实的工程问题，不要只提交随机乱码。
+
+  - type: input
+    id: exhibit-name
+    attributes:
+      label: 展品名称
+      placeholder: "例如：十八层 if-else 火山"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scene
+    attributes:
+      label: 案发现场
+      description: 这段代码原本想解决什么问题？
+      placeholder: "业务背景、输入输出、现有限制……"
+    validations:
+      required: true
+
+  - type: textarea
+    id: smell
+    attributes:
+      label: 主要气味
+      description: 具体包含哪些代码异味或反模式？
+      placeholder: "嵌套过深、魔法数字、字符串类型系统……"
+    validations:
+      required: true
+
+  - type: textarea
+    id: explosion
+    attributes:
+      label: 它会怎么炸？
+      description: 哪类需求变化最容易让问题失控？
+    validations:
+      required: true
+
+  - type: textarea
+    id: shovel
+    attributes:
+      label: 铲屎路线
+      description: 建议如何逐步重构？
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: 入山安检
+      options:
+        - label: 不包含真实密钥、个人信息或第三方私有代码
+          required: true
+        - label: 不包含恶意载荷或破坏性命令
+          required: true
+        - label: 我愿意补充可运行示例或明确的复现步骤
+          required: true

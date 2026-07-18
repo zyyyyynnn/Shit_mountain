@@ -1,0 +1,26 @@
+# Java rubble
+*.class
+*.jar
+*.war
+*.ear
+
+# Build craters
+build/
+out/
+target/
+.shit-build/
+
+# IDE camping gear
+.idea/
+.vscode/
+*.iml
+
+# Operating-system fossils
+.DS_Store
+Thumbs.db
+
+# Logs and accidental secrets
+*.log
+.env
+.env.*
+!.env.example
