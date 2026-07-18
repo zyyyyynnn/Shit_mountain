@@ -1,87 +1,80 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="720" viewBox="0 0 1600 720" role="img" aria-labelledby="title desc">
   <title id="title">Shit Mountain — executable anti-pattern reserve</title>
-  <desc id="desc">A dark editorial illustration of a layered code mountain with topographic lines, code fragments, and a warning placard.</desc>
+  <desc id="desc">A restrained editorial poster: a geological mountain built from code strata, set on a strict typographic grid with a single safety-orange accent.</desc>
 
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0b0d10"/>
-      <stop offset="1" stop-color="#17130f"/>
-    </linearGradient>
-    <linearGradient id="mountain" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#d6b98a"/>
-      <stop offset="0.45" stop-color="#8f6843"/>
-      <stop offset="1" stop-color="#3a2a20"/>
-    </linearGradient>
-    <linearGradient id="ridge" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#f0dfbd" stop-opacity="0.92"/>
-      <stop offset="1" stop-color="#b88a5a" stop-opacity="0.15"/>
-    </linearGradient>
-    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M32 0H0V32" fill="none" stroke="#f3e7cf" stroke-opacity="0.045" stroke-width="1"/>
-    </pattern>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.55"/>
-    </filter>
-    <clipPath id="mountainClip">
-      <path d="M330 406C363 370 397 353 431 342C399 316 412 276 459 260C430 226 451 184 505 172C494 126 537 86 600 86C663 86 706 126 695 172C749 184 770 226 741 260C788 276 801 316 769 342C803 353 837 370 870 406Z"/>
+    <clipPath id="mountain-clip">
+      <path d="M620 610L676 548L735 534L778 475L836 456L876 390L932 372L976 298L1032 318L1076 244L1124 267L1170 176L1218 245L1276 263L1316 330L1372 352L1410 420L1460 449L1512 610Z"/>
     </clipPath>
+    <pattern id="micro-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#111111" stroke-opacity="0.045" stroke-width="1"/>
+    </pattern>
   </defs>
 
-  <rect width="1200" height="520" rx="28" fill="url(#background)"/>
-  <rect width="1200" height="520" rx="28" fill="url(#grid)"/>
+  <rect width="1600" height="720" fill="#EEEAE1"/>
+  <rect width="1600" height="720" fill="url(#micro-grid)"/>
 
-  <g fill="none" stroke="#d9c6a4" stroke-width="1.3" stroke-opacity="0.13">
-    <path d="M-60 116C132 26 236 226 423 124S738 40 1260 138"/>
-    <path d="M-80 148C128 56 243 254 431 154S753 76 1280 170"/>
-    <path d="M-90 430C155 342 260 496 454 414S810 326 1290 434"/>
-    <path d="M-70 462C168 384 286 520 472 446S817 366 1270 466"/>
+  <g stroke="#111111" stroke-opacity="0.22" stroke-width="1">
+    <path d="M80 64H1520"/>
+    <path d="M80 656H1520"/>
+    <path d="M80 64V656"/>
+    <path d="M520 64V656"/>
+    <path d="M1520 64V656"/>
   </g>
 
-  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#dcc8a6">
-    <text x="64" y="70" font-size="14" letter-spacing="3" opacity="0.68">ZONE 00 / UNSTABLE LEGACY TERRAIN</text>
-    <text x="1136" y="70" font-size="13" text-anchor="end" letter-spacing="2" opacity="0.48">EST. 2026</text>
+  <g fill="#111111" font-family="Arial, Helvetica, sans-serif">
+    <text x="88" y="104" font-size="16" font-weight="700" letter-spacing="3.8">EXECUTABLE ANTI-PATTERN RESERVE</text>
+    <text x="88" y="226" font-size="104" font-weight="900" letter-spacing="-5">SHIT</text>
+    <text x="88" y="326" font-size="104" font-weight="900" letter-spacing="-5">MOUNTAIN</text>
+    <text x="94" y="382" font-size="18" font-weight="700" letter-spacing="1.1" font-family="Inter, Noto Sans CJK SC, PingFang SC, Microsoft YaHei, Arial, sans-serif">能运行，不代表能维护。</text>
   </g>
 
-  <g filter="url(#shadow)">
-    <path d="M305 426C346 379 386 357 425 345C390 314 405 267 452 250C420 210 445 164 494 151C487 99 533 56 600 56C667 56 713 99 706 151C755 164 780 210 748 250C795 267 810 314 775 345C814 357 854 379 895 426Z" fill="#17110d" stroke="#d6b98a" stroke-opacity="0.34" stroke-width="2"/>
-    <path d="M330 406C363 370 397 353 431 342C399 316 412 276 459 260C430 226 451 184 505 172C494 126 537 86 600 86C663 86 706 126 695 172C749 184 770 226 741 260C788 276 801 316 769 342C803 353 837 370 870 406Z" fill="url(#mountain)"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#111111">
+    <text x="88" y="506" font-size="14" letter-spacing="1.8">SITE / SM-000</text>
+    <text x="88" y="536" font-size="14" letter-spacing="1.8">STATUS / RUNNABLE</text>
+    <text x="88" y="566" font-size="14" letter-spacing="1.8">STABILITY / CONDITIONAL</text>
+    <text x="88" y="596" font-size="14" letter-spacing="1.8">MAINTAINABILITY / DISPUTED</text>
+  </g>
 
-    <g clip-path="url(#mountainClip)" fill="none" stroke="url(#ridge)" stroke-width="3">
-      <path d="M300 391C403 358 478 383 600 350S791 337 906 384"/>
-      <path d="M314 348C413 315 497 342 600 309S785 297 888 338"/>
-      <path d="M350 302C436 276 503 295 600 267S759 258 844 294"/>
-      <path d="M386 254C462 233 522 245 600 221S732 215 808 246"/>
-      <path d="M433 205C489 192 542 196 600 177S704 176 765 198"/>
-      <path d="M495 154C533 145 567 145 600 132S666 133 707 150"/>
+  <rect x="88" y="626" width="312" height="8" fill="#FF4D00"/>
+
+  <path d="M620 610L676 548L735 534L778 475L836 456L876 390L932 372L976 298L1032 318L1076 244L1124 267L1170 176L1218 245L1276 263L1316 330L1372 352L1410 420L1460 449L1512 610Z" fill="#111111"/>
+
+  <g clip-path="url(#mountain-clip)">
+    <path d="M584 548C720 504 814 532 922 488C1030 444 1120 450 1220 492C1320 534 1426 526 1550 476V548H584Z" fill="#2A2723"/>
+    <path d="M584 484C716 452 826 468 928 424C1030 380 1114 388 1216 426C1318 464 1424 460 1550 408V480C1416 530 1310 534 1210 494C1110 454 1020 454 918 496C816 538 714 520 584 556Z" fill="#4A4035"/>
+    <path d="M584 416C718 384 818 398 924 356C1030 314 1122 326 1224 362C1326 398 1434 392 1550 348V410C1428 456 1322 460 1216 424C1110 388 1020 382 916 426C812 470 712 450 584 486Z" fill="#6A5745"/>
+    <path d="M584 348C706 324 812 334 912 294C1012 254 1112 266 1214 300C1316 334 1420 332 1550 288V350C1418 394 1314 398 1210 364C1106 330 1016 318 910 358C804 398 706 388 584 418Z" fill="#8B7158"/>
+    <path d="M584 282C716 258 812 270 920 230C1028 190 1120 202 1220 236C1320 270 1420 268 1550 228V290C1422 332 1318 336 1212 302C1106 268 1014 256 910 296C806 336 704 324 584 350Z" fill="#B09678"/>
+
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#EEEAE1" opacity="0.62">
+      <text x="704" y="570">if (flag == true) return final_v8;</text>
+      <text x="840" y="508">catch (Exception e) { /* ignore */ }</text>
+      <text x="945" y="440">EverythingManager.getInstance().run();</text>
+      <text x="1030" y="374">TODO: temporary fix — 2019</text>
+      <text x="1102" y="310">switch(type) { default: return 42; }</text>
+      <text x="1145" y="246">tmp_new_final_FINAL</text>
     </g>
 
-    <g clip-path="url(#mountainClip)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" fill="#f4e9d2" opacity="0.52">
-      <text x="402" y="379">if (final2 == true)</text>
-      <text x="676" y="354">catch (Exception e) { }</text>
-      <text x="456" y="309">tmp_final_v7</text>
-      <text x="655" y="281">TODO: simple fix</text>
-      <text x="507" y="235">manager.manager.run()</text>
-      <text x="575" y="187">42</text>
-    </g>
+    <path d="M1198 182L1160 266L1192 316L1148 382L1180 438L1136 516L1164 610" fill="none" stroke="#FF4D00" stroke-width="8" stroke-linejoin="bevel"/>
   </g>
 
-  <g transform="translate(78 344)">
-    <rect width="210" height="92" rx="8" fill="#d6b98a"/>
-    <rect x="10" y="10" width="190" height="72" rx="4" fill="#111317"/>
-    <text x="105" y="38" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" letter-spacing="2" fill="#d6b98a">PUBLIC WARNING</text>
-    <text x="105" y="62" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#f0e4ce">能运行，不代表能维护</text>
+  <path d="M620 610L676 548L735 534L778 475L836 456L876 390L932 372L976 298L1032 318L1076 244L1124 267L1170 176L1218 245L1276 263L1316 330L1372 352L1410 420L1460 449L1512 610" fill="none" stroke="#111111" stroke-width="3"/>
+  <path d="M584 610H1520" stroke="#111111" stroke-width="3"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" fill="#111111">
+    <text x="596" y="130" letter-spacing="2">FIG. 01 — ACCUMULATED TECHNICAL DEBT</text>
+    <text x="1508" y="130" text-anchor="end" letter-spacing="2">ELEVATION: UNBOUNDED</text>
+    <text x="1468" y="642" text-anchor="end" letter-spacing="1.6">FAULT LINE / CHANGE REQUEST</text>
   </g>
 
-  <g transform="translate(912 326)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-    <path d="M0 0H210V112H0Z" fill="#101216" stroke="#d6b98a" stroke-opacity="0.42"/>
-    <path d="M0 0H210" stroke="#d6b98a" stroke-width="5"/>
-    <text x="18" y="32" font-size="11" letter-spacing="2" fill="#d6b98a">MOUNTAIN STATUS</text>
-    <text x="18" y="63" font-size="23" font-weight="700" fill="#f1e4cb">RUNNABLE</text>
-    <text x="18" y="88" font-size="12" fill="#c59e72">MAINTAINABILITY: DISPUTED</text>
+  <g stroke="#FF4D00" stroke-width="2" fill="none">
+    <path d="M1390 628H1468"/>
+    <path d="M1390 628L1358 594"/>
   </g>
 
-  <g text-anchor="middle">
-    <text x="600" y="466" font-family="ui-sans-serif, system-ui, sans-serif" font-size="42" font-weight="800" letter-spacing="8" fill="#f3e7cf">SHIT MOUNTAIN</text>
-    <text x="600" y="494" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="4" fill="#bfa27c">EXECUTABLE ANTI-PATTERN RESERVE</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" fill="#111111" opacity="0.72">
+    <text x="88" y="687" letter-spacing="2.4">ARCHIVE OF RUNNABLE FAILURES</text>
+    <text x="1512" y="687" text-anchor="end" letter-spacing="2.4">EST. 2026 / OPEN FOR INSPECTION</text>
   </g>
 </svg>
