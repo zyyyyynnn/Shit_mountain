@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+REPO_ROOT = SCRIPTS_DIR.parent
 sys.path.insert(0, str(SCRIPTS_DIR))
 
 import smi  # noqa: E402
@@ -71,6 +72,23 @@ class AnalyzerTests(unittest.TestCase):
         self.assertEqual(metrics.suspicious_comments, 2)
         self.assertEqual(sum(components.values()), 73)
         self.assertEqual(smi.danger_level(73), "铲屎车进入一级战备")
+
+    def test_known_god_object_score_is_stable(self) -> None:
+        source_path = (
+            REPO_ROOT
+            / "exhibits/java/002-one-class-to-rule-them-all/bad/EverythingManagerFinalV2.java"
+        )
+        exhibit = smi.Exhibit(
+            exhibit_id="002",
+            slug="one-class-to-rule-them-all",
+            sources=(source_path,),
+        )
+        result = smi.analyze_exhibit(exhibit)
+
+        self.assertEqual(result.metrics.global_mutable, 8)
+        self.assertGreaterEqual(result.metrics.long_method_lines, 80)
+        self.assertEqual(result.score, 100)
+        self.assertEqual(result.level, "建议原地成立事故调查组")
 
     def test_strings_and_comments_do_not_inflate_metrics(self) -> None:
         source = """
