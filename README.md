@@ -59,7 +59,10 @@
 ├── scripts/
 │   ├── smi.py                             # 屎山指数测绘仪
 │   ├── tests/                             # 指数基准与回归测试
-│   └── validate.sh                        # 山体稳定性检测
+│   ├── validators/                        # 目录即语言检查器注册表
+│   │   ├── java.sh                        # 企业级熔岩检查
+│   │   └── python.sh                      # 缩进地层检查
+│   └── validate.sh                        # 多语言安检调度器
 └── .github/                               # 景区管理处
 ```
 
@@ -138,17 +141,28 @@ python3 scripts/smi.py --check
 
 需要 JDK 17 或更高版本，以及 Python 3.10 或更高版本。
 
+运行整座山的安检：
+
 ```bash
 bash scripts/validate.sh
 ```
 
-验山脚本会：
+也可以单独进入某个语言地质层：
 
-1. 运行 SMI 回归测试。
-2. 确认 README 排行榜没有过期。
-3. 发现并编译仓库内的 Java 展品。
-4. 执行坏版与修复版。
-5. 在评分漂移、排行榜过期或任一展品失效时以非零状态退出。
+```bash
+bash scripts/validators/java.sh
+bash scripts/validators/python.sh
+```
+
+多语言安检会：
+
+1. 按文件名排序发现 `scripts/validators/*.sh`，不维护中央硬编码列表。
+2. 由 Java 检查器验证运行时、编译全部 Java 文件并执行展品行为合同。
+3. 由 Python 检查器验证运行时、编译 Python 源码、运行回归测试并检查 SMI 排行榜漂移。
+4. 在运行时缺失时给出对应语言和安装要求，而不是返回模糊的命令失败。
+5. 在任一检查器失败时立即以非零状态退出。
+
+检查器只执行仓库内已审查的本地脚本，不通过管道下载或执行远程代码。新增语言的注册规则见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
 
 当前自动化原则很简单：**代码可以难看，但整座山必须还能启动。**
 
