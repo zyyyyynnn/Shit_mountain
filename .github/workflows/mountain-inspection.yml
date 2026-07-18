@@ -1,4 +1,4 @@
-name: 💩 Mountain Stability Inspection
+name: Mountain Stability Inspection
 
 on:
   push:
@@ -18,11 +18,16 @@ jobs:
       - name: 搬运整座山
         uses: actions/checkout@v4
 
-      - name: 安装铲屎用 JDK
+      - name: 安装 JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
 
-      - name: 检查山体稳定性
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 检查山体稳定性与指数漂移
         run: bash scripts/validate.sh
