@@ -20,21 +20,36 @@ fi
 javac -encoding UTF-8 -d "$BUILD_DIR" "${JAVA_FILES[@]}"
 
 legacy_output="$(java -cp "$BUILD_DIR" shit_demo)"
-bad_output="$(java -cp "$BUILD_DIR" ShitDiscountCalculator)"
-fixed_output="$(java -cp "$BUILD_DIR" CleanDiscountCalculator)"
+volcano_bad_output="$(java -cp "$BUILD_DIR" ShitDiscountCalculator)"
+volcano_fixed_output="$(java -cp "$BUILD_DIR" CleanDiscountCalculator)"
+god_object_bad_output="$(java -cp "$BUILD_DIR" EverythingManagerFinalV2)"
+god_object_fixed_output="$(java -cp "$BUILD_DIR" CompanyOperations)"
 
 [[ "$legacy_output" == *"Hello Shitmountain"* ]] || {
   printf '[error] 镇山之屎失去响应。\n' >&2
   exit 1
 }
 
-[[ "$bad_output" == "70" ]] || {
-  printf '[error] 火山原始喷发结果异常：%s\n' "$bad_output" >&2
+[[ "$volcano_bad_output" == "70" ]] || {
+  printf '[error] 火山原始喷发结果异常：%s\n' "$volcano_bad_output" >&2
   exit 1
 }
 
-[[ "$fixed_output" == "70" ]] || {
-  printf '[error] 铲屎后业务结果发生漂移：%s\n' "$fixed_output" >&2
+[[ "$volcano_fixed_output" == "$volcano_bad_output" ]] || {
+  printf '[error] 火山铲屎后业务结果发生漂移：bad=%s fixed=%s\n' \
+    "$volcano_bad_output" "$volcano_fixed_output" >&2
+  exit 1
+}
+
+expected_empire_output='ORDER-1001|PAID|stock=7|mail=sent|audit=1'
+[[ "$god_object_bad_output" == "$expected_empire_output" ]] || {
+  printf '[error] 王座厅原始政令异常：%s\n' "$god_object_bad_output" >&2
+  exit 1
+}
+
+[[ "$god_object_fixed_output" == "$god_object_bad_output" ]] || {
+  printf '[error] 帝国解体后业务结果发生漂移：bad=%s fixed=%s\n' \
+    "$god_object_bad_output" "$god_object_fixed_output" >&2
   exit 1
 }
 
