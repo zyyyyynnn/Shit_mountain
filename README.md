@@ -1,7 +1,7 @@
 # Shit Mountain
 
 <p align="center">
-  <img src="./assets/shit-mountain-hero.svg" width="100%" alt="Shit Mountain — executable anti-pattern reserve" />
+  <img src="./assets/shit-mountain-hero-v2.svg" width="100%" alt="Shit Mountain — executable anti-pattern reserve" />
 </p>
 
 <p align="center">
@@ -44,7 +44,7 @@
 .
 ├── shit_demo.java                         # 镇山之屎：祖传五行代码
 ├── assets/
-│   └── shit-mountain-hero.svg             # 景区主视觉
+│   └── shit-mountain-hero-v2.svg          # 景区主视觉
 ├── exhibits/                              # 正式展区
 │   └── java/
 │       └── 001-if-else-volcano/
