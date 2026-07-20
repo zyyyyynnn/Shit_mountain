@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 import tempfile
+import textwrap
 import unittest
 from pathlib import Path
 
@@ -64,16 +65,18 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual(sum(python_scores(metrics).values()), 32)
 
     def test_python_adapter_detects_language_specific_smells(self) -> None:
-        source = """
-        backlog = []
+        source = textwrap.dedent(
+            """
+            backlog = []
 
-        def run(items=[], command="42"):
-            try:
-                eval(command)
-            except Exception:
-                pass
-            return items
-        """
+            def run(items=[], command="42"):
+                try:
+                    eval(command)
+                except Exception:
+                    pass
+                return items
+            """
+        )
         metrics = analyze_python(source)
         self.assertEqual(metrics.mutable_defaults, 1)
         self.assertEqual(metrics.global_mutable, 1)
