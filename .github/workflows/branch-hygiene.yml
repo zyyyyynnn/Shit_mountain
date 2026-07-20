@@ -16,10 +16,11 @@ jobs:
   remove-merged-agent-branches:
     if: github.event_name == 'push' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: 清理已经完工的施工便道
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const owner = context.repo.owner;
