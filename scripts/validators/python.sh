@@ -13,7 +13,7 @@ CACHE_DIR="$(mktemp -d)"
 trap 'rm -rf "$CACHE_DIR"' EXIT
 export PYTHONPYCACHEPREFIX="$CACHE_DIR"
 
-printf '[python] 正在确认缩进地层和测绘设施没有位移...\n'
+printf '[python] 正在确认缩进地层、测绘设施和目录索引没有位移...\n'
 
 mapfile -d '' PYTHON_FILES < <(
   find scripts exhibits -type f -name '*.py' -not -path '*/__pycache__/*' -print0
@@ -34,8 +34,8 @@ if ! python3 -m unittest discover -s scripts/tests -p 'test_*.py'; then
   exit 1
 fi
 
-if ! python3 scripts/smi.py --check; then
-  printf '[python:error] SMI 排行榜与事故现场不一致。请运行 python3 scripts/smi.py --write。\n' >&2
+if ! python3 scripts/docs_generator.py --check; then
+  printf '[python:error] 生成文档与展品声明不一致。请运行 python3 scripts/docs_generator.py --write。\n' >&2
   exit 1
 fi
 
@@ -44,4 +44,4 @@ if ! python3 scripts/exhibit_runner.py --language python; then
   exit 1
 fi
 
-printf '[python:ok] %s 个 Python 文件通过基础设施测试、隔离运行、行为合同与 SMI 漂移检查。\n' "${#PYTHON_FILES[@]}"
+printf '[python:ok] %s 个 Python 文件通过基础设施测试、隔离运行、行为合同与文档漂移检查。\n' "${#PYTHON_FILES[@]}"
