@@ -39,4 +39,20 @@ if ! python3 scripts/smi.py --check; then
   exit 1
 fi
 
-printf '[python:ok] %s 个 Python 文件通过语法、测试与 SMI 漂移检查。\n' "${#PYTHON_FILES[@]}"
+swamp_bad_output="$(python3 exhibits/python/003-mutable-default-swamp/bad/mutable_default_swamp.py)"
+swamp_fixed_output="$(python3 exhibits/python/003-mutable-default-swamp/fixed/mutable_default_swamp.py)"
+
+expected_swamp_bad='first=inspect-volcano|second=inspect-volcano,repair-bridge|contaminated=yes'
+expected_swamp_fixed='first=inspect-volcano|second=repair-bridge|isolated=yes'
+
+[[ "$swamp_bad_output" == "$expected_swamp_bad" ]] || {
+  printf '[python:error] 可变默认参数沼泽没有复现预期污染：%s\n' "$swamp_bad_output" >&2
+  exit 1
+}
+
+[[ "$swamp_fixed_output" == "$expected_swamp_fixed" ]] || {
+  printf '[python:error] 沼泽排水后仍存在跨调用污染：%s\n' "$swamp_fixed_output" >&2
+  exit 1
+}
+
+printf '[python:ok] %s 个 Python 文件通过语法、测试、行为合同与 SMI 漂移检查。\n' "${#PYTHON_FILES[@]}"
