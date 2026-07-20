@@ -3,6 +3,12 @@
   "id": "002",
   "slug": "one-class-to-rule-them-all",
   "language": "java",
+  "catalog": {
+    "title": "One Class to Rule Them All",
+    "summary": "一个订单入口兼并库存、定价、支付、通知和审计，最终建立只有一个王座的职责帝国。",
+    "smells": ["God Object", "共享状态", "职责兼并"],
+    "status": "王座失控"
+  },
   "timeout_seconds": 5,
   "bad": {"source_dir": "bad", "entrypoint": "EverythingManagerFinalV2"},
   "fixed": {"source_dir": "fixed", "entrypoint": "CompanyOperations"},
