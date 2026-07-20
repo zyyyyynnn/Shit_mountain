@@ -30,4 +30,15 @@ jobs:
           python-version: '3.12'
 
       - name: 检查山体稳定性与指数漂移
-        run: bash scripts/validate.sh
+        shell: bash
+        run: |
+          set -o pipefail
+          bash scripts/validate.sh 2>&1 | tee validation.log
+
+      - name: 保存失败诊断
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-log
+          path: validation.log
+          retention-days: 3
