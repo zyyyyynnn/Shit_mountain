@@ -48,21 +48,29 @@
 │   └── shit-mountain-hero-v2.svg          # 景区主视觉
 ├── exhibits/                              # 正式展区
 │   ├── java/
-│   │   ├── 001-if-else-volcano/           # 条件分支火山
-│   │   └── 002-one-class-to-rule-them-all/# God Object 王座厅
+│   │   ├── 001-if-else-volcano/
+│   │   │   ├── exhibit.json               # 入口、超时与行为合同
+│   │   │   ├── bad/
+│   │   │   └── fixed/
+│   │   └── 002-one-class-to-rule-them-all/
+│   │       ├── exhibit.json
+│   │       ├── bad/
+│   │       └── fixed/
 │   └── python/
-│       └── 003-mutable-default-swamp/     # 可变默认参数沼泽
+│       └── 003-mutable-default-swamp/
+│           ├── exhibit.json
+│           ├── bad/
+│           └── fixed/
+├── docs/
+│   └── exhibit-contracts.md               # 展品声明与执行边界
 ├── scripts/
-│   ├── smi.py                             # 兼容命令入口
-│   ├── smi_engine/
-│   │   ├── core.py                        # 展品、排序、封顶与 README
-│   │   ├── java.py                        # Java 地层测绘适配器
-│   │   ├── python.py                      # Python AST 测绘适配器
-│   │   └── registry.py                    # 稳定适配器注册表
-│   ├── tests/                             # 指数基准与回归测试
+│   ├── exhibit_runner.py                  # 隔离编译、受限运行与合同校验
+│   ├── smi.py                             # SMI 兼容命令入口
+│   ├── smi_engine/                        # 按语言测绘适配器
+│   ├── tests/                             # 指数、合同与回归测试
 │   ├── validators/                        # 目录即语言检查器注册表
-│   │   ├── java.sh                        # 企业级熔岩检查
-│   │   └── python.sh                      # 缩进地层检查
+│   │   ├── java.sh
+│   │   └── python.sh
 │   └── validate.sh                        # 多语言安检调度器
 └── .github/                               # 景区管理处
 ```
@@ -74,9 +82,9 @@
 | 编号 | 展品 | 语言 | 主要罪名 | 山体状态 |
 |---:|---|---|---|---|
 | `000` | `hello-shitmountain` | Java | 类名小写、孤立根目录、没有任何上下文 | 永久陈列 |
-| `001` | `if-else-volcano` | Java | 嵌套判断、魔法值、字符串类型系统 | 活跃喷发 |
-| `002` | `one-class-to-rule-them-all` | Java | God Object、共享状态、职责兼并 | 王座失控 |
-| `003` | `mutable-default-swamp` | Python | 可变默认参数、跨调用状态污染 | 沼泽扩散 |
+| `001` | [`if-else-volcano`](exhibits/java/001-if-else-volcano/) | Java | 嵌套判断、魔法值、字符串类型系统 | 活跃喷发 |
+| `002` | [`one-class-to-rule-them-all`](exhibits/java/002-one-class-to-rule-them-all/) | Java | God Object、共享状态、职责兼并 | 王座失控 |
+| `003` | [`mutable-default-swamp`](exhibits/python/003-mutable-default-swamp/) | Python | 可变默认参数、跨调用状态污染 | 沼泽扩散 |
 
 ### 001：If-Else Volcano
 
@@ -84,7 +92,7 @@
 
 - `bad/`：保留嵌套判断、魔法数字和“简单处理一下”的事故气质。
 - `fixed/`：使用枚举、职责拆分与显式互斥规则恢复可维护性。
-- 行为校验：坏版与修复版对同一输入保持一致输出，避免借重构偷改业务。
+- 行为合同：`equal-output`，两个版本都必须输出 `70`。
 
 ### 002：One Class to Rule Them All
 
@@ -92,7 +100,7 @@
 
 - `bad/`：`EverythingManagerFinalV2` 通过共享字段和超长方法控制所有部门。
 - `fixed/`：`OrderService` 只负责编排，库存、定价、支付、通知和审计分别拥有清晰边界。
-- 行为校验：帝国解体前后都输出同一订单结果，避免把“重构”变成业务改写。
+- 行为合同：`equal-output`，帝国解体前后必须输出同一订单结果。
 
 ### 003：Mutable Default Argument Swamp
 
@@ -100,7 +108,7 @@
 
 - `bad/`：第二次调用继承第一次调用的任务，输出 `contaminated=yes`。
 - `fixed/`：使用 `None` 哨兵在每次独立调用中创建新列表，输出 `isolated=yes`。
-- 行为校验：Python 检查器真实执行两个版本，并锁定跨调用污染与修复结果。
+- 行为合同：`expected-difference`，坏版必须持续复现污染，修复版必须保持隔离。
 
 ## 屎山指数
 
@@ -173,22 +181,21 @@ python3 scripts/smi.py --check
 bash scripts/validate.sh
 ```
 
-也可以单独进入某个语言地质层：
+也可以单独执行合同或语言检查：
 
 ```bash
+python3 scripts/exhibit_runner.py --list
+python3 scripts/exhibit_runner.py --language java
+python3 scripts/exhibit_runner.py --language python
 bash scripts/validators/java.sh
 bash scripts/validators/python.sh
 ```
 
-多语言安检会：
+正式展品会分别编译到独立目录，并在一次性临时工作区内运行。执行器默认限制为 5 秒和 65536 字节输出；每个展品可以在 `exhibit.json` 中声明 1 到 30 秒的时限。完整合同格式与执行边界见 [`docs/exhibit-contracts.md`](docs/exhibit-contracts.md)。
 
-1. 按文件名排序发现 `scripts/validators/*.sh`，不维护中央硬编码列表。
-2. 由 Java 检查器验证运行时、编译全部 Java 文件并执行展品行为合同。
-3. 由 Python 检查器验证运行时、编译 Python 源码、运行适配器回归测试、执行 Python 展品行为合同并检查 SMI 排行榜漂移。
-4. 在运行时缺失时给出对应语言和安装要求，而不是返回模糊的命令失败。
-5. 在任一检查器失败时立即以非零状态退出。
+CI 同时验证 JDK 17 / Python 3.10 的最低支持组合，以及 JDK 21 / Python 3.12 的当前组合。检查失败时会保存三天的精简诊断日志。
 
-检查器只执行仓库内已审查的本地脚本，不通过管道下载或执行远程代码。新增语言的注册规则见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+执行器不是操作系统级沙箱。检查器只执行仓库内已审查的本地代码，不通过管道下载远程脚本，也不向展品传递项目密钥。
 
 当前自动化原则很简单：**代码可以难看，但整座山必须还能启动。**
 
@@ -197,11 +204,12 @@ bash scripts/validators/python.sh
 请先阅读 [`CONTRIBUTING.md`](CONTRIBUTING.md)。标准施工流程如下：
 
 1. 在 `exhibits/<language>/<number>-<slug>/` 创建独立展品。
-2. 编写展品 `README.md`，说明形成原因、爆炸方式和重构路线。
-3. 将事故现场放进 `bad/`，将修复方案放进 `fixed/`。
-4. 运行 `python3 scripts/smi.py --write` 更新排行榜。
-5. 运行 `bash scripts/validate.sh`。
-6. 提交 Pull Request，并使用 `[展品]`、`[铲屎]` 或 `[景区建设]` 前缀。
+2. 编写 `exhibit.json`，声明入口、超时和行为合同。
+3. 编写展品 `README.md`，说明形成原因、爆炸方式和重构路线。
+4. 将事故现场放进 `bad/`，将修复方案放进 `fixed/`。
+5. 运行 `python3 scripts/smi.py --write` 更新排行榜。
+6. 运行 `bash scripts/validate.sh`。
+7. 提交 Pull Request，并使用 `[展品]`、`[铲屎]` 或 `[景区建设]` 前缀。
 
 ### 合格展品
 
@@ -216,6 +224,14 @@ bash scripts/validators/python.sh
 - 只有冒犯性命名，没有可分析的工程问题。
 - 包含真实个人信息、凭证、私有源码或恶意载荷的内容。
 - 复制第三方事故现场，却没有授权或去标识处理的内容。
+
+## 项目治理
+
+- [贡献指南](CONTRIBUTING.md)
+- [展品合同](docs/exhibit-contracts.md)
+- [安全政策](SECURITY.md)
+- [社区行为准则](CODE_OF_CONDUCT.md)
+- [MIT License](LICENSE)
 
 ## 维护哲学
 

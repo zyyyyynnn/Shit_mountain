@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "id": "002",
+  "slug": "one-class-to-rule-them-all",
+  "language": "java",
+  "timeout_seconds": 5,
+  "bad": {"source_dir": "bad", "entrypoint": "EverythingManagerFinalV2"},
+  "fixed": {"source_dir": "fixed", "entrypoint": "CompanyOperations"},
+  "contract": {
+    "type": "equal-output",
+    "expected": "ORDER-1001|PAID|stock=7|mail=sent|audit=1"
+  }
+}
