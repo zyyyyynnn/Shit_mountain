@@ -13,7 +13,7 @@ CACHE_DIR="$(mktemp -d)"
 trap 'rm -rf "$CACHE_DIR"' EXIT
 export PYTHONPYCACHEPREFIX="$CACHE_DIR"
 
-printf '[python] 正在确认缩进地层没有位移...\n'
+printf '[python] 正在确认缩进地层和测绘设施没有位移...\n'
 
 mapfile -d '' PYTHON_FILES < <(
   find scripts exhibits -type f -name '*.py' -not -path '*/__pycache__/*' -print0
@@ -24,8 +24,8 @@ if [[ ${#PYTHON_FILES[@]} -eq 0 ]]; then
   exit 1
 fi
 
-if ! python3 -m compileall -q scripts exhibits; then
-  printf '[python:error] Python 语法检查失败。上方诊断包含具体文件和行号。\n' >&2
+if ! python3 -m compileall -q scripts; then
+  printf '[python:error] Python 基础设施语法检查失败。上方诊断包含具体文件和行号。\n' >&2
   exit 1
 fi
 
@@ -39,20 +39,9 @@ if ! python3 scripts/smi.py --check; then
   exit 1
 fi
 
-swamp_bad_output="$(python3 exhibits/python/003-mutable-default-swamp/bad/mutable_default_swamp.py)"
-swamp_fixed_output="$(python3 exhibits/python/003-mutable-default-swamp/fixed/mutable_default_swamp.py)"
-
-expected_swamp_bad='first=inspect-volcano|second=inspect-volcano,repair-bridge|contaminated=yes'
-expected_swamp_fixed='first=inspect-volcano|second=repair-bridge|isolated=yes'
-
-[[ "$swamp_bad_output" == "$expected_swamp_bad" ]] || {
-  printf '[python:error] 可变默认参数沼泽没有复现预期污染：%s\n' "$swamp_bad_output" >&2
+if ! python3 scripts/exhibit_runner.py --language python; then
+  printf '[python:error] Python 展品的隔离编译、运行或行为合同失败。\n' >&2
   exit 1
-}
+fi
 
-[[ "$swamp_fixed_output" == "$expected_swamp_fixed" ]] || {
-  printf '[python:error] 沼泽排水后仍存在跨调用污染：%s\n' "$swamp_fixed_output" >&2
-  exit 1
-}
-
-printf '[python:ok] %s 个 Python 文件通过语法、测试、行为合同与 SMI 漂移检查。\n' "${#PYTHON_FILES[@]}"
+printf '[python:ok] %s 个 Python 文件通过基础设施测试、隔离运行、行为合同与 SMI 漂移检查。\n' "${#PYTHON_FILES[@]}"
