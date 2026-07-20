@@ -1,0 +1,81 @@
+name: Branch Hygiene
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/branch-hygiene.yml'
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  remove-merged-agent-branches:
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 清理已经完工的施工便道
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const mergedBranches = new Set();
+
+            if (context.eventName === 'pull_request') {
+              const pullRequest = context.payload.pull_request;
+              const isSameRepository = pullRequest.head.repo?.full_name === `${owner}/${repo}`;
+              const isAgentBranch = pullRequest.head.ref.startsWith('agent/');
+
+              if (pullRequest.merged && isSameRepository && isAgentBranch) {
+                mergedBranches.add(pullRequest.head.ref);
+              }
+            } else {
+              const closedPullRequests = await github.paginate(
+                github.rest.pulls.list,
+                { owner, repo, state: 'closed', per_page: 100 }
+              );
+
+              for (const pullRequest of closedPullRequests) {
+                const isSameRepository = pullRequest.head.repo?.full_name === `${owner}/${repo}`;
+                const isAgentBranch = pullRequest.head.ref.startsWith('agent/');
+
+                if (pullRequest.merged_at && isSameRepository && isAgentBranch) {
+                  mergedBranches.add(pullRequest.head.ref);
+                }
+              }
+            }
+
+            const branches = await github.paginate(
+              github.rest.repos.listBranches,
+              { owner, repo, per_page: 100 }
+            );
+            const existingBranches = new Set(branches.map((branch) => branch.name));
+
+            for (const branch of [...mergedBranches].sort()) {
+              if (!existingBranches.has(branch)) {
+                core.info(`[cleanup] already absent: ${branch}`);
+                continue;
+              }
+
+              try {
+                await github.rest.git.deleteRef({
+                  owner,
+                  repo,
+                  ref: `heads/${branch}`,
+                });
+                core.info(`[cleanup] deleted merged branch: ${branch}`);
+              } catch (error) {
+                if (error.status === 404 || error.status === 422) {
+                  core.warning(`[cleanup] skipped ${branch}: ${error.message}`);
+                  continue;
+                }
+                throw error;
+              }
+            }
+
+            core.info(`[cleanup] inspected ${mergedBranches.size} merged agent branches`);
