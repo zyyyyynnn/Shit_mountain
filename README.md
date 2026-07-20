@@ -47,15 +47,14 @@
 ├── assets/
 │   └── shit-mountain-hero-v2.svg          # 景区主视觉
 ├── exhibits/                              # 正式展区
-│   └── java/
-│       ├── 001-if-else-volcano/
-│       │   ├── README.md                  # 条件分支火山档案
-│       │   ├── bad/                       # 原始喷发现场
-│       │   └── fixed/                     # 分支治理区
-│       └── 002-one-class-to-rule-them-all/
-│           ├── README.md                  # 王座厅与帝国解体报告
-│           ├── bad/                       # 一个类统治整个公司
-│           └── fixed/                     # 职责分权后的部门结构
+│   ├── java/
+│   │   ├── 001-if-else-volcano/           # 条件分支火山
+│   │   └── 002-one-class-to-rule-them-all/# God Object 王座厅
+│   └── python/
+│       └── 003-mutable-default-swamp/     # 可变默认参数沼泽
+│           ├── README.md                  # 状态沉积调查报告
+│           ├── bad/                       # 前一位游客留下的脚印
+│           └── fixed/                     # 排水后的独立调用区
 ├── scripts/
 │   ├── smi.py                             # 屎山指数测绘仪
 │   ├── tests/                             # 指数基准与回归测试
@@ -70,11 +69,12 @@
 
 ## 现有展品
 
-| 编号 | 展品 | 主要罪名 | 山体状态 |
-|---:|---|---|---|
-| `000` | `hello-shitmountain` | 类名小写、孤立根目录、没有任何上下文 | 永久陈列 |
-| `001` | `if-else-volcano` | 嵌套判断、魔法值、字符串类型系统 | 活跃喷发 |
-| `002` | `one-class-to-rule-them-all` | God Object、共享状态、职责兼并 | 王座失控 |
+| 编号 | 展品 | 语言 | 主要罪名 | 山体状态 |
+|---:|---|---|---|---|
+| `000` | `hello-shitmountain` | Java | 类名小写、孤立根目录、没有任何上下文 | 永久陈列 |
+| `001` | `if-else-volcano` | Java | 嵌套判断、魔法值、字符串类型系统 | 活跃喷发 |
+| `002` | `one-class-to-rule-them-all` | Java | God Object、共享状态、职责兼并 | 王座失控 |
+| `003` | `mutable-default-swamp` | Python | 可变默认参数、跨调用状态污染 | 沼泽扩散 |
 
 ### 001：If-Else Volcano
 
@@ -96,9 +96,19 @@
 - `fixed/`：`OrderService` 只负责编排，库存、定价、支付、通知和审计分别拥有清晰边界。
 - 行为校验：帝国解体前后都输出同一订单结果，避免把“重构”变成业务改写。
 
+### 003：Mutable Default Argument Swamp
+
+一个使用 `tasks=[]` 作为默认参数的任务收集函数，把前一次调用的状态带进下一次调用，形成看不见的共享沼泽。
+
+展品同时提供：
+
+- `bad/`：第二次调用继承第一次调用的任务，输出 `contaminated=yes`。
+- `fixed/`：使用 `None` 哨兵在每次独立调用中创建新列表，输出 `isolated=yes`。
+- 行为校验：Python 检查器真实执行两个版本，并锁定跨调用污染与修复结果。
+
 ## 屎山指数
 
-Shit Mountain Index，简称 `SMI`，是一套确定性、可解释的代码异味启发式。它只扫描展品的事故现场，不调用外部服务，也不使用黑箱 AI 判断。
+Shit Mountain Index，简称 `SMI`，是一套确定性、可解释的代码异味启发式。当前 v1 只扫描 Java 事故现场，不调用外部服务，也不使用黑箱 AI 判断。Python 展品将在语言适配版 SMI 中进入排行榜。
 
 ### 计分规则
 
@@ -158,7 +168,7 @@ bash scripts/validators/python.sh
 
 1. 按文件名排序发现 `scripts/validators/*.sh`，不维护中央硬编码列表。
 2. 由 Java 检查器验证运行时、编译全部 Java 文件并执行展品行为合同。
-3. 由 Python 检查器验证运行时、编译 Python 源码、运行回归测试并检查 SMI 排行榜漂移。
+3. 由 Python 检查器验证运行时、编译 Python 源码、运行回归测试、执行 Python 展品行为合同并检查 SMI 排行榜漂移。
 4. 在运行时缺失时给出对应语言和安装要求，而不是返回模糊的命令失败。
 5. 在任一检查器失败时立即以非零状态退出。
 
