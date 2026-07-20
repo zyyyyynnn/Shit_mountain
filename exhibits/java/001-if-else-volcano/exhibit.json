@@ -3,6 +3,12 @@
   "id": "001",
   "slug": "if-else-volcano",
   "language": "java",
+  "catalog": {
+    "title": "If-Else Volcano",
+    "summary": "折扣规则不断吸收会员、节日、优惠券和临时需求，最终形成条件分支火山。",
+    "smells": ["嵌套判断", "魔法值", "字符串类型系统"],
+    "status": "活跃喷发"
+  },
   "timeout_seconds": 5,
   "bad": {"source_dir": "bad", "entrypoint": "ShitDiscountCalculator"},
   "fixed": {"source_dir": "fixed", "entrypoint": "CleanDiscountCalculator"},
