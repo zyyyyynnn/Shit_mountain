@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "id": "001",
+  "slug": "if-else-volcano",
+  "language": "java",
+  "timeout_seconds": 5,
+  "bad": {"source_dir": "bad", "entrypoint": "ShitDiscountCalculator"},
+  "fixed": {"source_dir": "fixed", "entrypoint": "CleanDiscountCalculator"},
+  "contract": {"type": "equal-output", "expected": "70"}
+}
