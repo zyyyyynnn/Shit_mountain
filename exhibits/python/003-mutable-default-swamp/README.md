@@ -75,6 +75,11 @@ python3 exhibits/python/003-mutable-default-swamp/fixed/mutable_default_swamp.py
 bash scripts/validate.sh
 ```
 
-## 当前测绘状态
+## 屎山指数
 
-SMI v1 只扫描 Java 事故现场，因此本展品暂不进入总榜。Python 适配器将在 SMI v2 中通过语言专用规则识别可变默认参数，而不是把 Java 正则强行套到 Python 上。
+SMI v2 的 Python 适配器使用 AST 识别语言专用异味，本展品得分为 **32 / 100**：
+
+- 可变默认参数：`30`
+- 决策点：`2`
+
+主因权重较高，因为它会制造跨请求、跨测试和跨任务的隐式共享状态。评分不复用 Java 正则，也不把入口处的 `if __name__ == "__main__"` 计入复杂度。

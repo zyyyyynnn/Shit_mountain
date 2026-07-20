@@ -55,7 +55,31 @@ python3 -m unittest discover -s scripts/tests -p 'test_*.py'
 
 SMI 是透明的启发式评分，只用于教育、娱乐和代码审查训练。不得使用分数羞辱贡献者，也不得为了冲榜加入没有教学价值的噪声。
 
-## 5. 注册新的语言检查器
+## 5. 注册新的 SMI 语言适配器
+
+SMI v2 将语言无关逻辑放在 `scripts/smi_engine/core.py`，语言指标放在独立适配器中：
+
+```text
+scripts/smi_engine/
+├── core.py
+├── java.py
+├── python.py
+└── registry.py
+```
+
+新增语言适配器时：
+
+1. 实现稳定的 `language`、`display_name` 与 `extensions`。
+2. 提供 `legacy_exhibits(root)`；没有历史展品时返回空元组。
+3. 提供 `analyze_sources(sources)`，返回“指标名称 → 非负分值”的字典。
+4. 只在适配器中使用语言专用解析、AST 或正则，禁止把语言规则塞进 `core.py`。
+5. 在 `registry.py` 注册适配器；注册结果按语言名稳定排序。
+6. 为语言专用异味、现有基准分和排行榜语言列增加回归测试。
+7. 在 README 中公开指标、权重和单项上限。
+
+核心层负责展品发现、总分封顶、危险等级、稳定排序和 README 生成。适配器不得自行修改 README，也不得调用网络、外部 AI 或付费分析服务。
+
+## 6. 注册新的语言检查器
 
 多语言安检使用目录注册机制：
 
@@ -80,7 +104,7 @@ scripts/validators/
 
 检查器可以有自己的景区广播，但错误必须指出失败的命令、文件或修复方式。搞怪文案不能覆盖真正的诊断输出。
 
-## 6. PR 命名
+## 7. PR 命名
 
 请选择一种景区通行证：
 
@@ -89,7 +113,7 @@ scripts/validators/
 - `[景区建设] add CI mountain inspection`
 - `[紧急封山] fix a dangerous example`
 
-## 7. 提交前验山
+## 8. 提交前验山
 
 ```bash
 bash scripts/validate.sh
@@ -103,9 +127,10 @@ bash scripts/validate.sh
 - [ ] README 中的 SMI 排行榜已重新生成。
 - [ ] 没有真实密钥、恶意载荷或破坏性命令。
 - [ ] 新增源码能通过对应语言检查器。
+- [ ] 新增语言适配器有独立测试，且核心层没有语言专用规则。
 - [ ] 新增语言检查器可以独立执行，并有清晰的运行时缺失提示。
 
-## 8. Review 原则
+## 9. Review 原则
 
 Review 时优先讨论：
 

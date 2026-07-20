@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 import tempfile
+import textwrap
 import unittest
 from pathlib import Path
 
@@ -9,88 +10,36 @@ SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = SCRIPTS_DIR.parent
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-import smi  # noqa: E402
+from smi_engine import core  # noqa: E402
+from smi_engine.java import analyze_source as analyze_java  # noqa: E402
+from smi_engine.java import component_scores as java_scores  # noqa: E402
+from smi_engine.python import analyze_source as analyze_python  # noqa: E402
+from smi_engine.python import component_scores as python_scores  # noqa: E402
+from smi_engine.registry import get_adapters  # noqa: E402
 
 
-VOLCANO = """public class ShitDiscountCalculator {
-    public static int calculate(int p, String t, boolean f, int c) {
-        int x = p;
+class AdapterTests(unittest.TestCase):
+    def test_known_java_scores_remain_stable(self) -> None:
+        volcano_path = (
+            REPO_ROOT
+            / "exhibits/java/001-if-else-volcano/bad/ShitDiscountCalculator.java"
+        )
+        volcano_metrics = analyze_java(volcano_path.read_text(encoding="utf-8"))
+        self.assertEqual(volcano_metrics.decisions, 9)
+        self.assertEqual(volcano_metrics.nesting, 3)
+        self.assertEqual(volcano_metrics.suspicious_comments, 2)
+        self.assertEqual(sum(java_scores(volcano_metrics).values()), 73)
 
-        // 简单处理一下
-        if (t.equals("VIP")) {
-            if (p > 100) {
-                if (f) {
-                    x = p - 30;
-                } else {
-                    x = p - 20;
-                }
-            } else {
-                x = p - 5;
-            }
-        } else {
-            if (t.equals("NORMAL")) {
-                if (f) {
-                    x = p - 3;
-                } else {
-                    x = p;
-                }
-            } else {
-                x = p;
-            }
-        }
-
-        if (c == 1) {
-            x = x - 10;
-        }
-        if (c == 2) {
-            x = x - 20;
-        }
-        if (c == 999) {
-            x = x - 1; // 没人知道为什么，但删了测试就红
-        }
-
-        if (x < 0) {
-            x = 0;
-        }
-        return x;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(calculate(120, "VIP", true, 2));
-    }
-}
-"""
-
-
-class AnalyzerTests(unittest.TestCase):
-    def test_known_volcano_score_is_stable(self) -> None:
-        metrics = smi.analyze_java(VOLCANO)
-        components = smi.component_scores(metrics)
-
-        self.assertEqual(metrics.decisions, 9)
-        self.assertEqual(metrics.nesting, 3)
-        self.assertEqual(metrics.suspicious_comments, 2)
-        self.assertEqual(sum(components.values()), 73)
-        self.assertEqual(smi.danger_level(73), "铲屎车进入一级战备")
-
-    def test_known_god_object_score_is_stable(self) -> None:
-        source_path = (
+        god_object_path = (
             REPO_ROOT
             / "exhibits/java/002-one-class-to-rule-them-all/bad/EverythingManagerFinalV2.java"
         )
-        exhibit = smi.Exhibit(
-            exhibit_id="002",
-            slug="one-class-to-rule-them-all",
-            sources=(source_path,),
-        )
-        result = smi.analyze_exhibit(exhibit)
+        god_metrics = analyze_java(god_object_path.read_text(encoding="utf-8"))
+        self.assertEqual(god_metrics.global_mutable, 8)
+        self.assertGreaterEqual(god_metrics.long_method_lines, 80)
+        self.assertGreaterEqual(sum(java_scores(god_metrics).values()), 100)
 
-        self.assertEqual(result.metrics.global_mutable, 8)
-        self.assertGreaterEqual(result.metrics.long_method_lines, 80)
-        self.assertEqual(result.score, 100)
-        self.assertEqual(result.level, "建议原地成立事故调查组")
-
-    def test_strings_and_comments_do_not_inflate_metrics(self) -> None:
+    def test_java_strings_and_comments_do_not_inflate_metrics(self) -> None:
         source = """
         public class Clean {
             public static void main(String[] args) {
@@ -100,54 +49,116 @@ class AnalyzerTests(unittest.TestCase):
             }
         }
         """
-        metrics = smi.analyze_java(source)
-
+        metrics = analyze_java(source)
         self.assertEqual(metrics.decisions, 0)
         self.assertEqual(metrics.magic_numbers, 0)
+
+    def test_python_mutable_default_score_is_stable(self) -> None:
+        swamp_path = (
+            REPO_ROOT
+            / "exhibits/python/003-mutable-default-swamp/bad/mutable_default_swamp.py"
+        )
+        metrics = analyze_python(swamp_path.read_text(encoding="utf-8"))
+        self.assertEqual(metrics.mutable_defaults, 1)
+        self.assertEqual(metrics.decisions, 1)
+        self.assertEqual(metrics.nesting, 0)
+        self.assertEqual(sum(python_scores(metrics).values()), 32)
+
+    def test_python_adapter_detects_language_specific_smells(self) -> None:
+        source = textwrap.dedent(
+            """
+            backlog = []
+
+            def run(items=[], command="42"):
+                try:
+                    eval(command)
+                except Exception:
+                    pass
+                return items
+            """
+        )
+        metrics = analyze_python(source)
+        self.assertEqual(metrics.mutable_defaults, 1)
+        self.assertEqual(metrics.global_mutable, 1)
+        self.assertEqual(metrics.broad_excepts, 1)
+        self.assertEqual(metrics.dynamic_execution, 1)
+
+    def test_registry_order_is_stable(self) -> None:
+        self.assertEqual(
+            [adapter.language for adapter in get_adapters()],
+            ["java", "python"],
+        )
+
+
+class CoreTests(unittest.TestCase):
+    def test_repository_scores_and_languages_are_stable(self) -> None:
+        results = {
+            result.exhibit.exhibit_id: (
+                result.exhibit.display_language,
+                result.score,
+            )
+            for result in core.analyze_all(REPO_ROOT, get_adapters())
+        }
+        self.assertEqual(
+            results,
+            {
+                "000": ("Java", 1),
+                "001": ("Java", 73),
+                "002": ("Java", 100),
+                "003": ("Python", 32),
+            },
+        )
+
+    def test_leaderboard_contains_language_column(self) -> None:
+        rendered = core.render_leaderboard(
+            core.analyze_all(REPO_ROOT, get_adapters())
+        )
+        self.assertIn("| 排名 | 编号 | 展品 | 语言 | SMI |", rendered)
+        self.assertIn("`mutable-default-swamp` | Python | **32**", rendered)
 
     def test_generated_section_replacement_is_bounded(self) -> None:
         original = (
             "before\n"
-            f"{smi.README_START}\n"
+            f"{core.README_START}\n"
             "old\n"
-            f"{smi.README_END}\n"
+            f"{core.README_END}\n"
             "after\n"
         )
         generated = (
-            f"{smi.README_START}\n"
+            f"{core.README_START}\n"
             "new\n"
-            f"{smi.README_END}"
+            f"{core.README_END}"
         )
-
-        updated = smi.replace_generated_section(original, generated)
-
+        updated = core.replace_generated_section(original, generated)
         self.assertEqual(
             updated,
             (
                 "before\n"
-                f"{smi.README_START}\n"
+                f"{core.README_START}\n"
                 "new\n"
-                f"{smi.README_END}\n"
+                f"{core.README_END}\n"
                 "after\n"
             ),
         )
 
-    def test_discovery_order_is_deterministic(self) -> None:
+    def test_discovery_order_is_deterministic_across_languages(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / "shit_demo.java").write_text("public class shit_demo {}", encoding="utf-8")
-            bad = root / "exhibits/java/002-zeta/bad"
-            bad.mkdir(parents=True)
-            (bad / "Z.java").write_text("public class Z {}", encoding="utf-8")
-            bad = root / "exhibits/java/001-alpha/bad"
-            bad.mkdir(parents=True)
-            (bad / "A.java").write_text("public class A {}", encoding="utf-8")
+            (root / "shit_demo.java").write_text(
+                "public class shit_demo {}", encoding="utf-8"
+            )
+            java_bad = root / "exhibits/java/002-zeta/bad"
+            java_bad.mkdir(parents=True)
+            (java_bad / "Z.java").write_text("public class Z {}", encoding="utf-8")
+            python_bad = root / "exhibits/python/001-alpha/bad"
+            python_bad.mkdir(parents=True)
+            (python_bad / "a.py").write_text("value = 1", encoding="utf-8")
 
-            exhibits = smi.discover_exhibits(root)
+            exhibits = core.discover_exhibits(root, get_adapters())
 
         self.assertEqual(
-            [exhibit.exhibit_id for exhibit in exhibits],
-            ["000", "001", "002"],
+            [(exhibit.exhibit_id, exhibit.language) for exhibit in exhibits],
+            [("000", "java"), ("001", "python"), ("002", "java")],
         )
 
 
