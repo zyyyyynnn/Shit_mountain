@@ -3,6 +3,12 @@
   "id": "003",
   "slug": "mutable-default-swamp",
   "language": "python",
+  "catalog": {
+    "title": "Mutable Default Argument Swamp",
+    "summary": "可变默认参数把前一次调用的状态带进下一次调用，形成看不见的共享沼泽。",
+    "smells": ["可变默认参数", "跨调用状态污染", "隐式共享状态"],
+    "status": "沼泽扩散"
+  },
   "timeout_seconds": 5,
   "bad": {"source_dir": "bad", "entrypoint": "mutable_default_swamp.py"},
   "fixed": {"source_dir": "fixed", "entrypoint": "mutable_default_swamp.py"},
